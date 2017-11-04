@@ -96,7 +96,7 @@ class Enemigo(pygame.sprite.Sprite):
           self.posImagen +=1
           self.tiempoCambio +=1
 
-          if self.posImagen >len (self.listaImagen)-1:
+          if self.posImagen >len (self.listaImagenes)-1:
               self.posImagen=0
 
     def  __movimientos (self):
