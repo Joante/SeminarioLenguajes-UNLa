@@ -1,13 +1,13 @@
 import pygame,sys
-from pygame.locals import *
+
 
 ancho =600
 alto =800
 
 def Creditos ():
+    pygame.init()
     ventana = pygame.display.set_mode((alto,ancho))
     Fondo=pygame.image.load("imagenes/Fondo_Creditos.jpg").convert_alpha()
-    ventana.blit(Fondo,(0,0))
     print """
                     Creadores:
             Federico Salvatierra
@@ -17,5 +17,8 @@ def Creditos ():
             Francisco Laperuta
 
     """
-    
+
+if __name__ == '__main__':
+	sys.stderr.write("You should import me, not start me...")
+	sys.exit()
     
