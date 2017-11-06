@@ -71,7 +71,7 @@ class Enemigo(pygame.sprite.Sprite):
     
         self.rect = self.imagenEnemigo.get_rect()
         self.listaDisparo = []
-        self.velocidad = 10
+        self.velocidad = 1 #velocidad de movimiento del enemigo
         self.rect.top = posy
         self.rect.left = posx
         self.rangoDisparo= 3
@@ -149,7 +149,7 @@ while True :
  
     reloj.tick(100)    #velocidad de frame por segundo
     tiempo = pygame.time.get_ticks() /1000
-    
+    pygame.display.update()
     for evento in pygame.event.get():
           if evento.type == QUIT:
              pygame.quit()
@@ -186,7 +186,7 @@ while True :
                       Marciano.listaDisparo.remove(x)
                
     
-pygame.display.update()
+
 juego()
 
 
