@@ -14,10 +14,9 @@ pygame.key.set_repeat(500,30)
 
 choose = dm.dumbmenu(ventana, [
                         'Iniciar Juego',
-                        'Optiones',
+                        'Opciones',
                         'Manual',
                         'Creditos',
-                        "Tabla Puntaje",
                         'Salir'], 64,64,None,32,1.5,verde,rojo)  # cordenadas de lugar del menu, tamanio de letra(seguido de entrelineado)
 
 # Prueba por consola
@@ -29,10 +28,8 @@ elif choose == 1:
 elif choose == 2:
     print ("Manual")
 elif choose == 3:
-    print ("Creditos")
+    from Creditos import*
 elif choose == 4:
-    print ("Mejor Puntaje")
-elif choose == 5:
      print ("Salir")
 pygame.quit()
 exit()
