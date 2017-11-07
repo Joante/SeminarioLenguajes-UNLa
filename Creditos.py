@@ -1,6 +1,7 @@
 import pygame,sys
 pygame.init()
 import submenu as dm
+from pygame.locals import *
 ancho =600
 alto =800
 
@@ -22,6 +23,11 @@ boton1=Boton(volver)
 salir = True
 while salir:
         pygame.init()
+        for evento in pygame.event.get():
+          if evento.type == QUIT:
+             pygame.quit()
+             sys.exit()
+        
         ventana = pygame.display.set_mode((alto,ancho))
         fondo=pygame.image.load("imagenes/Fondo_Creditos.jpg").convert_alpha()
         ventana.blit(fondo, (0, 0))
@@ -31,8 +37,8 @@ while salir:
         cursor1.update()
         boton1.update(ventana,cursor1)
         pygame.display.update()
-        
 
+  
 
 quit()
         
