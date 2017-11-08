@@ -5,11 +5,18 @@ from random import randint   # numero aleatorios
 ancho =600
 alto =800
 listaEnemigo = []
-####  PLAYER  #####
+def detenertodo():
+    for Marciano in listaEnemigo:
+        for disparo in Marciano.listaDisparo:
+            Marciano.listaDisparo.remove(disparo)
+        Marciano.conquista= True
+         
+##############NAVE##################
 class nave (pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.nave = pygame.image.load("imagenes/nave2.png")
+        self.Explosion = pygame.image.load("imagenes/Explosion.png")
         self.rect = self.nave.get_rect()
         self.rect.centerx = ancho/2
         self.rect.centery= alto-250
@@ -28,9 +35,13 @@ class nave (pygame.sprite.Sprite):
         if self.vida == True:
             if self.rect.left<=0:
                 self.rect.left=0
-            elif self.rect.right>801:
+            elif self.rect.right>800:
                self.rect.right = 800
-            
+               
+    def Destruccion(self):
+        self.vida=False
+        self.velocidad=0
+        self.nave = self.Explosion
 
     def disparar(self, x, y):
         mibala= Disparo(x,y, "imagenes/bala.png", True)
@@ -38,7 +49,8 @@ class nave (pygame.sprite.Sprite):
 
     def dibujar (self, superficie):
         superficie.blit(self.nave, self.rect)
-########    DISPARO    ########
+
+################DISPARO####################
 class Disparo(pygame.sprite.Sprite):
     def  __init__(self , posx , posy, ruta, personaje):
         pygame.sprite.Sprite.__init__(self)
@@ -57,8 +69,8 @@ class Disparo(pygame.sprite.Sprite):
 
     def dibujar (self, superficie):
         superficie.blit(self.bala, self.rect)
-######### ENEMIGO ######
-        
+
+##################ENEMIGO###############
 class Enemigo(pygame.sprite.Sprite):
     def  __init__(self , posx , posy, distancia , imagenUno, imagenDos):
         pygame.sprite.Sprite.__init__(self)
@@ -68,13 +80,14 @@ class Enemigo(pygame.sprite.Sprite):
         self.posImagen=0
         
         self.imagenEnemigo = self.listaImagenes[self.posImagen]
-    
+        self.conquista = False
         self.rect = self.imagenEnemigo.get_rect()
         self.listaDisparo = []
         self.velocidad = 1 #velocidad de movimiento del enemigo
+        self.conquista = False
         self.rect.top = posy
         self.rect.left = posx
-        self.rangoDisparo= 3
+        self.rangoDisparo= 2# rango y cantidad 
         self.tiempoCambio = 1
   
         self.derecha= True   # movimiento del Enemigo
@@ -89,8 +102,8 @@ class Enemigo(pygame.sprite.Sprite):
         superficie.blit(self.imagenEnemigo, self.rect)
 
     def comportamiento (self, tiempo):
+       if self.conquista == False:  
         self.__movimientos()
-        
         self.__ataque()
         if self.tiempoCambio == tiempo:
           self.posImagen +=1
@@ -108,7 +121,7 @@ class Enemigo(pygame.sprite.Sprite):
     def __descenso (self):
        if self.maxdescenso == self.rect.top:
           self.contador=0
-          self.maxdescenso= self.rect.top+ 40
+          self.maxdescenso= self.rect.top+40
        else:
             self.rect.top +=1
             
@@ -130,23 +143,39 @@ class Enemigo(pygame.sprite.Sprite):
         x,y = self.rect.center
         piedra = Disparo(x,y,"Imagenes/piedra.png", False)
         self.listaDisparo.append(piedra)
+def  detenerTodo():
+    for Marciano in listaEnemigo:
+        for disparo in Marciano.listaDisparo:
+            marciano.listaDisparo.remove(disparo)
     
 def cargarEnemigos():
-   Marciano = Enemigo (100,100,40,"imagenes/marcianoA.png","imagenes/marcianoB.png")
-   listaEnemigo.append(Marciano)
+   posx = 200
+   for x in range (1,5):
+     Marciano = Enemigo (posx,100,40,"imagenes/marcianoA.png","imagenes/marcianoC.png")
+     listaEnemigo.append(Marciano)
+     posx = posx +200
 
-    
+   posx = 100
+   for x in range (0,5):
+     Marciano = Enemigo (posx,0,40,"imagenes/marcianoB.png","imagenes/marcianoC.png")
+     listaEnemigo.append(Marciano)
+     posx = posx +200
+
+     
 def Juego():
  pygame.init()
 ventana = pygame.display.set_mode((alto,ancho))
 pygame.display.set_caption("Prototipo 1")
 Fondo=pygame.image.load("imagenes/fondo1.jpg").convert_alpha()
-Jugador= nave()
+GameOver= pygame.image.load("imagenes/GameOver.png")
+Jugador=nave()
 cargarEnemigos()
 inGame = True
 reloj = pygame.time.Clock()
+#Fuente=pygame.font.Font(None, 30)
+#texto = Fuente.render("Game Over",0,(200,60,80))
+
 while True :
- 
     reloj.tick(100)    #velocidad de frame por segundo
     tiempo = pygame.time.get_ticks() /1000
     pygame.display.update()
@@ -173,19 +202,40 @@ while True :
              x.trayectoria()
              if x.rect.top<10:
                 Jugador.listaDisparo.remove(x)
+             else:
+                   for Marciano in listaEnemigo:
+                        if x.rect.colliderect(Marciano.rect):
+                            listaEnemigo.remove(Marciano)
+                            Jugador.listaDisparo.remove(x)
+                            
     if len (listaEnemigo)>0:
          for Marciano in listaEnemigo:
              Marciano.comportamiento(tiempo)
              Marciano.dibujar(ventana)
              
+             if Marciano.rect.colliderect(Jugador.rect):
+                 Jugador.Destruccion()
+                 inGame=False
+                 detenertodo()
+             
              if len (Marciano.listaDisparo)>0:  # eliminar bala de la ventana cuando llege a su recorrido
                 for x in Marciano.listaDisparo:
                    x.dibujar(ventana)
                    x.trayectoria()
+                   if x.rect.colliderect(Jugador.rect):
+                       Jugador.Destruccion()
+                       inGame= False
+                       detenertodo()
                    if x.rect.top<10:
                       Marciano.listaDisparo.remove(x)
-               
-    
+                   else:
+                       for disparo in Jugador.listaDisparo:
+                          if x.rect.colliderect(disparo.rect):
+                              Jugador.listaDisparo.remove(disparo)
+                              Marciano.listaDisparo.remove(x)
+
+                              
+#if inGame == False:
 
 juego()
 
