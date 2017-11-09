@@ -175,6 +175,7 @@ inGame = True
 reloj = pygame.time.Clock()
 #Fuente=pygame.font.Font(None, 30)
 #texto = Fuente.render("Game Over",0,(200,60,80))
+pygame.mixer.init(44100, -16,2,2048)
 pygame.mixer.music.load("Sonidos/Intro.mp3")
 pygame.mixer.music.play(3)
 while True :
@@ -204,11 +205,10 @@ while True :
              x.trayectoria()
              if x.rect.top<10:
                 Jugador.listaDisparo.remove(x)
-             else:
-                   for Marciano in listaEnemigo:
-                        if x.rect.colliderect(Marciano.rect):
-                            listaEnemigo.remove(Marciano)
-                            Jugador.listaDisparo.remove(x)
+        for Marciano in listaEnemigo:
+            if x.rect.colliderect(Marciano.rect):
+                listaEnemigo.remove(Marciano)
+                Jugador.listaDisparo.remove(x)
                             
     if len (listaEnemigo)>0:
          for Marciano in listaEnemigo:
