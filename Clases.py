@@ -20,7 +20,7 @@ class nave (pygame.sprite.Sprite):
         self.rect = self.nave.get_rect()
         self.rect.centerx = ancho/2
         self.rect.centery= alto-250
-        #self.sonidoDisparo = pygame.mixer.Sound("Sonidos/disparo.wav")
+    
 
         self.listaDisparo = [ ]
         self.vida= True
@@ -60,7 +60,6 @@ class Disparo(pygame.sprite.Sprite):
         self.rect.top = posy
         self.rect.left = posx
         self.disparoPersonaje = personaje
-      #  self.sonidoDisparo.play() # sonido disparo
         
     def trayectoria (self ):
         if self.disparoPersonaje == True:
@@ -178,6 +177,7 @@ reloj = pygame.time.Clock()
 pygame.mixer.init(44100, -16,2,2048)
 pygame.mixer.music.load("Sonidos/Intro.mp3")
 pygame.mixer.music.play(3)
+sonidoDisparo = pygame.mixer.Sound("Sonidos/disparo.wav")
 while True :
     reloj.tick(100)    #velocidad de frame por segundo
     tiempo = pygame.time.get_ticks() /1000
@@ -193,6 +193,7 @@ while True :
                   elif evento.key == K_RIGHT:
                    Jugador.movimientoDerecha()
                   elif evento.key == K_SPACE:   # tecla para disparar 
+                    sonidoDisparo.play()
                     x,y = Jugador.rect.center
                     Jugador.disparar(x,y)
                     
@@ -240,6 +241,3 @@ while True :
 #if inGame == False:
 
 juego()
-
-
-
