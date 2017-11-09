@@ -70,6 +70,7 @@ class Disparo(pygame.sprite.Sprite):
     def dibujar (self, superficie):
         superficie.blit(self.bala, self.rect)
 
+
 ##################ENEMIGO###############
 class Enemigo(pygame.sprite.Sprite):
     def  __init__(self , posx , posy, distancia , imagenUno, imagenDos):
@@ -173,8 +174,6 @@ Jugador=nave()
 cargarEnemigos()
 inGame = True
 reloj = pygame.time.Clock()
-#Fuente=pygame.font.Font(None, 30)
-#texto = Fuente.render("Game Over",0,(200,60,80))
 pygame.mixer.init(44100, -16,2,2048)
 pygame.mixer.music.load("Sonidos/Intro.mp3")
 pygame.mixer.music.play(3)
@@ -217,19 +216,16 @@ while inGame :
          for Marciano in listaEnemigo:
              Marciano.comportamiento(tiempo)
              Marciano.dibujar(ventana)
-             if Marciano.rect.colliderect(Jugador.rect):
-                 #Jugador.Destruccion()
+             if Marciano.rect.colliderect(Jugador.rect):      
                  inGame=False
-                 #detenertodo()
+            
              
              if len (Marciano.listaDisparo)>0:  # eliminar bala de la ventana cuando llege a su recorrido
                 for x in Marciano.listaDisparo:
                    x.dibujar(ventana)
                    x.trayectoria()
                    if x.rect.colliderect(Jugador.rect):
-                       #Jugador.Destruccion()
-                       inGame= False
-                       #detenertodo()
+                       inGame= False 
                    if x.rect.top<10:
                       Marciano.listaDisparo.remove(x)
                    else:
