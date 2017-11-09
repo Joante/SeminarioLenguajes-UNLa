@@ -16,7 +16,7 @@ class nave (pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.nave = pygame.image.load("imagenes/nave2.png")
-        self.Explosion = pygame.image.load("imagenes/Explosion.png")
+        self.explosion = pygame.image.load("imagenes/Explosion.png")
         self.rect = self.nave.get_rect()
         self.rect.centerx = ancho/2
         self.rect.centery= alto-250
@@ -41,7 +41,7 @@ class nave (pygame.sprite.Sprite):
     def Destruccion(self):
         self.vida=False
         self.velocidad=0
-        self.nave = self.Explosion
+        self.nave = self.explosion
 
     def disparar(self, x, y):
         mibala= Disparo(x,y, "imagenes/bala.png", True)
@@ -164,10 +164,11 @@ def cargarEnemigos():
      
 def Juego():
  pygame.init()
+pygame.font.init()
 ventana = pygame.display.set_mode((alto,ancho))
 pygame.display.set_caption("Prototipo 1")
 Fondo=pygame.image.load("imagenes/fondo1.jpg").convert_alpha()
-GameOver= pygame.image.load("imagenes/GameOver.png")
+GameOver= pygame.image.load("imagenes/GameOver2.png")
 Jugador=nave()
 cargarEnemigos()
 inGame = True
@@ -178,7 +179,7 @@ pygame.mixer.init(44100, -16,2,2048)
 pygame.mixer.music.load("Sonidos/Intro.mp3")
 pygame.mixer.music.play(3)
 sonidoDisparo = pygame.mixer.Sound("Sonidos/disparo.wav")
-while True :
+while inGame :
     reloj.tick(100)    #velocidad de frame por segundo
     tiempo = pygame.time.get_ticks() /1000
     pygame.display.update()
@@ -206,29 +207,29 @@ while True :
              x.trayectoria()
              if x.rect.top<10:
                 Jugador.listaDisparo.remove(x)
-        for Marciano in listaEnemigo:
-            if x.rect.colliderect(Marciano.rect):
-                listaEnemigo.remove(Marciano)
-                Jugador.listaDisparo.remove(x)
+             else:
+                for Marciano in listaEnemigo:
+                    if x.rect.colliderect(Marciano.rect):
+                        listaEnemigo.remove(Marciano)
+                        Jugador.listaDisparo.remove(x)
                             
     if len (listaEnemigo)>0:
          for Marciano in listaEnemigo:
              Marciano.comportamiento(tiempo)
              Marciano.dibujar(ventana)
-             
              if Marciano.rect.colliderect(Jugador.rect):
-                 Jugador.Destruccion()
+                 #Jugador.Destruccion()
                  inGame=False
-                 detenertodo()
+                 #detenertodo()
              
              if len (Marciano.listaDisparo)>0:  # eliminar bala de la ventana cuando llege a su recorrido
                 for x in Marciano.listaDisparo:
                    x.dibujar(ventana)
                    x.trayectoria()
                    if x.rect.colliderect(Jugador.rect):
-                       Jugador.Destruccion()
+                       #Jugador.Destruccion()
                        inGame= False
-                       detenertodo()
+                       #detenertodo()
                    if x.rect.top<10:
                       Marciano.listaDisparo.remove(x)
                    else:
@@ -238,6 +239,13 @@ while True :
                               Marciano.listaDisparo.remove(x)
 
                               
-#if inGame == False:
-
-juego()
+if inGame == False:
+    Jugador.Destruccion()
+    detenertodo()
+    ventana.blit(GameOver,(210,100))
+    pygame.display.update()
+    while  inGame == False:
+        for event in pygame.event.get():
+                mouse=pygame.mouse.get_pressed()
+                if mouse[0] == 1:
+                       from main import*
