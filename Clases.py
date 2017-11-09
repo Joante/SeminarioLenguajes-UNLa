@@ -168,7 +168,7 @@ pygame.font.init()
 ventana = pygame.display.set_mode((alto,ancho))
 pygame.display.set_caption("Prototipo 1")
 Fondo=pygame.image.load("imagenes/fondo1.jpg").convert_alpha()
-GameOver= pygame.image.load("imagenes/GameOver2.png")
+gameover= pygame.image.load("imagenes/GameOver2.png")
 Jugador=nave()
 cargarEnemigos()
 inGame = True
@@ -242,7 +242,7 @@ while inGame :
 if inGame == False:
     Jugador.Destruccion()
     detenertodo()
-    ventana.blit(GameOver,(210,100))
+    ventana.blit(gameover,(210,100))
     pygame.display.update()
     while  inGame == False:
         for event in pygame.event.get():
