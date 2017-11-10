@@ -20,7 +20,7 @@ class nave (pygame.sprite.Sprite):
         self.rect = self.nave.get_rect()
         self.rect.centerx = ancho/2
         self.rect.centery= alto-250
-    
+                                 
 
         self.listaDisparo = [ ]
         self.vida= True
@@ -38,7 +38,7 @@ class nave (pygame.sprite.Sprite):
             elif self.rect.right>800:
                self.rect.right = 800
                
-    def Destruccion(self):
+    def destruccion(self):
         self.vida=False
         self.velocidad=0
         self.nave = self.explosion
@@ -178,7 +178,10 @@ pygame.mixer.init(44100, -16,2,2048)
 pygame.mixer.music.load("Sonidos/Intro.mp3")
 pygame.mixer.music.play(3)
 sonidoDisparo = pygame.mixer.Sound("Sonidos/disparo.wav")
-while inGame :
+sonidoExplosion = pygame.mixer.Sound("Sonidos/explosion.wav")
+final=pygame.mixer.Sound("Sonidos/galaga_dive.wav")
+                                     
+while True :
     reloj.tick(100)    #velocidad de frame por segundo
     tiempo = pygame.time.get_ticks() /1000
     pygame.display.update()
@@ -210,22 +213,24 @@ while inGame :
                 for Marciano in listaEnemigo:
                     if x.rect.colliderect(Marciano.rect):
                         listaEnemigo.remove(Marciano)
-                        Jugador.listaDisparo.remove(x)
+                        
                             
     if len (listaEnemigo)>0:
          for Marciano in listaEnemigo:
              Marciano.comportamiento(tiempo)
              Marciano.dibujar(ventana)
              if Marciano.rect.colliderect(Jugador.rect):      
+                 Jugador.destruccion()
                  inGame=False
-            
-             
+                 detenertodo()
              if len (Marciano.listaDisparo)>0:  # eliminar bala de la ventana cuando llege a su recorrido
                 for x in Marciano.listaDisparo:
                    x.dibujar(ventana)
                    x.trayectoria()
                    if x.rect.colliderect(Jugador.rect):
-                       inGame= False 
+                        Jugador.destruccion()
+                        sonidoExplosion.play()
+                        inGame= False
                    if x.rect.top<10:
                       Marciano.listaDisparo.remove(x)
                    else:
@@ -233,11 +238,13 @@ while inGame :
                           if x.rect.colliderect(disparo.rect):
                               Jugador.listaDisparo.remove(disparo)
                               Marciano.listaDisparo.remove(x)
-
+    if inGame == False:
+        break
                               
 if inGame == False:
-    Jugador.Destruccion()
     detenertodo()
+    pygame.mixer.music.stop()
+    final.play()
     ventana.blit(gameover,(210,100))
     pygame.display.update()
     while  inGame == False:
